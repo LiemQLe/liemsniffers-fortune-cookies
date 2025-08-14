@@ -1,0 +1,22 @@
+services:
+  frontend:
+    build: ./frontend
+    environment:
+      - BACKEND_PORT=9000
+      - BACKEND_DNS=backend
+    networks:
+      - fortune-cookie-frontend
+
+  backend:
+    build: ./backend
+    environment:
+      - REDIS_DNS=redis
+
+    networks:
+      - fortune-cookie-frontend
+      - fortune-cookie-backend
+
+networks:
+  fortune-cookie-frontend:
+  fortune-cookie-backend:
+  
