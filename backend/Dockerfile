@@ -10,6 +10,8 @@ FROM golang:1.24
 
 COPY --from=builder /usr/src/backend/backend .
 
+ENV REDIS_DNS=redis
+
 EXPOSE 9000
 
 CMD [ "./backend" ]
