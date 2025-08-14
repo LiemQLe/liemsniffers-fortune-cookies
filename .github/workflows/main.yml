@@ -1,5 +1,5 @@
-name: Liemsniffers CI
-
+name: Liemsniffers CI 
+  
 on:
   push:
     branches: [ main ]
@@ -16,3 +16,18 @@ jobs:
         uses: actions/setup-go@v5.5.0
       - name: Run Test
         run: cd frontend && go test
+  
+  Containerize:
+    runs-on: ubuntu-24.04
+    needs: [PreTestingFrontend]
+    strategy:
+      matrix:
+        images: [frontend, backend]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+      - name: Build
+        id: build
+        run: cd ${{ matrix.images }} && docker build -t fortune-cookies/${{ matrix.images }}:${{ github.sha }} .
+
+  
