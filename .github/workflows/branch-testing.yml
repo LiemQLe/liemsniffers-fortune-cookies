@@ -1,4 +1,4 @@
-name: Liemsniffers CI 
+name: Liemsniffers Branch CI 
 env:
   GIT_COMMIT: ${{ github.sha }}
   GIT_REPO: ${{ github.event.repository.name }}
