@@ -1,4 +1,4 @@
-name: Liemsniffers CI 
+name: Liemsniffers Branch CI 
 env:
   GIT_COMMIT: ${{ github.sha }}
   GIT_REPO: ${{ github.event.repository.name }}
@@ -7,7 +7,9 @@ env:
   DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 on:
   push:
-    branches: [ main ]
+    branches-ignore: [main]
+  pull_request:
+    branches: ["**"]
 
 jobs:
   PreTestingFrontend:
@@ -23,8 +25,6 @@ jobs:
   Containerize:
     runs-on: ubuntu-24.04
     needs: [PreTestingFrontend]
-    permissions:
-      packages: write
     strategy:
       matrix:
         images: [frontend, backend]
@@ -44,7 +44,4 @@ jobs:
             -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:$SHORT_SHA \
             -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:latest \
             ${{ matrix.images }}/
-      - name: Push Image
-        if: steps.build
-        run: docker push --all-tags $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}
   
