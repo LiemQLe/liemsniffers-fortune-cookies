@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
         - image: ghcr.io/liemqle/liemsniffers-fortune-cookies/backend:latest
+          imagePullPolicy: Always
           name: fc-backend
           ports:
           - containerPort: 9000
