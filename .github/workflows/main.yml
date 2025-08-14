@@ -35,7 +35,7 @@ jobs:
       - name: Build
         id: build
         run: |
-          docker build -t ${{ DOCKER_REPO }}/fortune-cookies/${{ matrix.images }}:${{ SHORT_SHA }} \
-          -t ${{ DOCKER_REPO }}/fortune-cookies/${{ matrix.images }}:latest /${{ matrix.images }}
+          docker build -t $DOCKER_REPO/fortune-cookies/${{ matrix.images }}:$SHORT_SHA \
+          -t $DOCKER_REPO/fortune-cookies/${{ matrix.images }}:latest /${{ matrix.images }}
     
   
