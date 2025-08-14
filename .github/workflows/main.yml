@@ -1,5 +1,9 @@
 name: Liemsniffers CI 
-  
+env:
+  GIT_COMMIT: ${{ github.sha }}
+  GIT_REPO: ${{ github.event.repository.name }}
+  DOCKER_REPO: "ghcr.io"
+  DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 on:
   push:
     branches: [ main ]
@@ -26,8 +30,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5.0.0
+      - name: Shorten SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
       - name: Build
         id: build
-        run: cd ${{ matrix.images }} && docker build -t fortune-cookies/${{ matrix.images }}:${{ github.sha }} .
-
+        run: |
+          docker build -t $DOCKER_REPO/fortune-cookies/${{ matrix.images }}:$SHORT_SHA \
+          -t $DOCKER_REPO/fortune-cookies/${{ matrix.images }}:latest ${{ matrix.images }}/
+    
   
