@@ -11,11 +11,18 @@ services:
 
   backend:
     build: ./backend
+    depends_on:
+      - redis
     environment:
       - REDIS_DNS=redis
 
     networks:
       - fortune-cookie-frontend
+      - fortune-cookie-backend
+
+  redis:
+    image: redis:8.2
+    networks:
       - fortune-cookie-backend
 
 networks:
