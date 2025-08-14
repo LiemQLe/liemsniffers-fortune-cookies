@@ -1,0 +1,47 @@
+name: Liemsniffers CI 
+env:
+  GIT_COMMIT: ${{ github.sha }}
+  GIT_REPO: ${{ github.event.repository.name }}
+  DOCKER_REPO: "ghcr.io"
+  DOCKER_REPO_OWNER: "liemqle"
+  DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  PreTestingFrontend:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+      - name: Install Go
+        uses: actions/setup-go@v5.5.0
+      - name: Run Test
+        run: cd frontend && go test
+  
+  Containerize:
+    runs-on: ubuntu-24.04
+    needs: [PreTestingFrontend]
+    strategy:
+      matrix:
+        images: [frontend, backend]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+      - name: Shorten SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
+      - name: Login to docker
+        id: login
+        run: echo "$DOCKER_PASSWORD" | docker login $DOCKER_REPO --username "$GIT_REPO" --password-stdin
+      - name: Build Image
+        if: steps.login
+        id: build
+        run: |
+          docker build \
+            -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:$SHORT_SHA \
+            -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:latest \
+            ${{ matrix.images }}/
+  
