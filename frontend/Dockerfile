@@ -12,4 +12,4 @@ COPY --from=builder /usr/src/frontend/frontend .
 
 EXPOSE 8080
 
-RUN go run frontend
+CMD [ "./frontend" ]
