@@ -12,4 +12,4 @@ COPY --from=builder /usr/src/backend/backend .
 
 EXPOSE 9000
 
-RUN go run backend
+CMD [ "./backend" ]
