@@ -28,6 +28,6 @@ jobs:
         uses: actions/checkout@v5.0.0
       - name: Build
         id: build
-        run: cd ${{ matrix.images }} && docker build -t fortune-cookies/${{ matrix.images }}:${{ github.sha }}
+        run: cd ${{ matrix.images }} && docker build -t fortune-cookies/${{ matrix.images }}:${{ github.sha }} .
 
   
