@@ -10,7 +10,7 @@ FROM golang:1.24
 
 COPY --from=builder /usr/src/backend/backend .
 
-ENV REDIS_DNS=redis
+ENV REDIS_DNS=127.0.0.1
 
 EXPOSE 9000
 
