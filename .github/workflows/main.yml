@@ -43,7 +43,7 @@ jobs:
         run: |
           docker build \
             -t $DOCKER_REPO/fortune-cookies/${{ matrix.images }}:$SHORT_SHA \
-            -t $DOCKER_REPO//$GIT_REPO/${{ matrix.images }}:latest \
+            -t $DOCKER_REPO/$GIT_REPO/${{ matrix.images }}:latest \
             ${{ matrix.images }}/
       - name: Push Image
         if: steps.build
