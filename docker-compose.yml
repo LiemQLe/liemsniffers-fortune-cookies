@@ -4,6 +4,8 @@ services:
     environment:
       - BACKEND_PORT=9000
       - BACKEND_DNS=backend
+    depends_on: 
+      - backend
     networks:
       - fortune-cookie-frontend
 
