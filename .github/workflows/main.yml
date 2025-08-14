@@ -24,6 +24,8 @@ jobs:
   Containerize:
     runs-on: ubuntu-24.04
     needs: [PreTestingFrontend]
+    permissions:
+      packages: write
     strategy:
       matrix:
         images: [frontend, backend]
