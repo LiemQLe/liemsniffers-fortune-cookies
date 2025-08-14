@@ -3,6 +3,7 @@ env:
   GIT_COMMIT: ${{ github.sha }}
   GIT_REPO: ${{ github.event.repository.name }}
   DOCKER_REPO: "ghcr.io"
+  DOCKER_REPO_OWNER: "liemqle"
   DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 on:
   push:
@@ -42,10 +43,10 @@ jobs:
         id: build
         run: |
           docker build \
-            -t $DOCKER_REPO/$GIT_REPO/${{ matrix.images }}:$SHORT_SHA \
-            -t $DOCKER_REPO/$GIT_REPO/${{ matrix.images }}:latest \
+            -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:$SHORT_SHA \
+            -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:latest \
             ${{ matrix.images }}/
       - name: Push Image
         if: steps.build
-        run: docker push --all-tags $DOCKER_REPO/$GIT_REPO/${{ matrix.images }}
+        run: docker push --all-tags $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}
   
