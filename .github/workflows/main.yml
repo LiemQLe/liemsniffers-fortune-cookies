@@ -3,6 +3,7 @@ env:
   GIT_COMMIT: ${{ github.sha }}
   GIT_REPO: ${{ github.event.repository.name }}
   DOCKER_REPO: "ghcr.io"
+  DOCKER_REPO_OWNER: "liemqle"
   DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 on:
   push:
@@ -24,6 +25,8 @@ jobs:
   Containerize:
     runs-on: ubuntu-24.04
     needs: [PreTestingFrontend]
+    permissions:
+      packages: write
     strategy:
       matrix:
         images: [frontend, backend]
@@ -32,11 +35,18 @@ jobs:
         uses: actions/checkout@v5.0.0
       - name: Shorten SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
-      - name: Build
+      - name: Login to docker
+        id: login
+        run: echo "$DOCKER_PASSWORD" | docker login $DOCKER_REPO --username "$GIT_REPO" --password-stdin
+      - name: Build Image
+        if: steps.login
         id: build
         run: |
           docker build \
-            -t $DOCKER_REPO/fortune-cookies/${{ matrix.images }}:$SHORT_SHA \
-            -t $DOCKER_REPO/$GIT_REPO/${{ matrix.images }}:latest \
+            -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:$SHORT_SHA \
+            -t $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}:latest \
             ${{ matrix.images }}/
+      - name: Push Image
+        if: steps.build
+        run: docker push --all-tags $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}
   
