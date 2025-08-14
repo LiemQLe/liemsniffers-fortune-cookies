@@ -48,3 +48,14 @@ jobs:
         if: steps.build
         run: docker push --all-tags $DOCKER_REPO/$DOCKER_REPO_OWNER/$GIT_REPO/${{ matrix.images }}
   
+  Deploy:
+    runs-on: ubuntu-24.04
+    needs: [Containerize]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+      - run: echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+      - name: Apply
+        run: kubectl --kubeconfig kubeconfig apply -f ./deployments
+      
+    
