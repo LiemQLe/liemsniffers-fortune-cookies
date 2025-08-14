@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector: # How to select pods belonging to this deployment. Must match the pod template's labels
+    matchLabels:
+      app: redis # List of labels
+  template: # This is the pod template, paste in the pod spec from redis-pod.yaml
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - image: redis:8.2
+          imagePullPolicy: Always
+          name: fc-redis
+          ports:
+          - containerPort: 6379
+          resources: {}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  type: ClusterIP
