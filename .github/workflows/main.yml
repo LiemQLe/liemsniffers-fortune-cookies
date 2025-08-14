@@ -58,7 +58,7 @@ jobs:
       - name: Apply
         run: kubectl --kubeconfig kubeconfig apply -f ./deployments
       - name: Rollout Deployments
-        run: kubectl --kubeconfig kubeconfig rollout restart -f deployments/
+        run: kubectl --kubeconfig kubeconfig rollout restart deployment
       
   AvailabilityTest:
     runs-on: ubuntu-24.04
